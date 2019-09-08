@@ -24,13 +24,13 @@ module.exports = {
       provider: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaulValue: false,
+        defaultValue: false,
       },
-      create_at: {
+      createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
       },
-      update_at: {
+      updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
       },
