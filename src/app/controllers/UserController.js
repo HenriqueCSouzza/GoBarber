@@ -1,6 +1,6 @@
 // lib yup não tem export default por isso é preciso pegar tudo oque tem dentro com *
 import * as Yup from 'yup';
-import User from '../models/User';
+import Users from '../models/User';
 
 class UserController {
   async store(req, res) {
@@ -20,12 +20,12 @@ class UserController {
       return res.status(400).json({ error: 'Validation Fails' });
     }
 
-    const userExist = await User.findOne({ where: { email: req.body.email } });
+    const userExist = await Users.findOne({ where: { email: req.body.email } });
     if (userExist) {
       return res.status(400).json({ error: 'User email already exists.' });
     }
 
-    const { id, name, email, provider } = await User.create(req.body);
+    const { id, name, email, provider } = await Users.create(req.body);
 
     return res.json({
       id,
@@ -58,11 +58,11 @@ class UserController {
 
     const { email, oldPassword } = req.body;
     // recebe o usuario com o id vindo pelo token
-    const user = await User.findByPk(req.userId);
+    const user = await Users.findByPk(req.userId);
     // verifica se o email é igual au usuario que quer trocar
     if (email !== user.email) {
       // verifica se tem algum usuario que contenha esse email
-      const userExist = await User.findOne({ where: { email } });
+      const userExist = await Users.findOne({ where: { email } });
       if (userExist) {
         return res.status(400).json({ error: 'User email already exists.' });
       }

@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Users', {
+    return queryInterface.createTable('Files', {
       // criando os campos da tabela
       id: {
         type: Sequelize.INTEGER,
@@ -12,19 +12,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      email: {
+      path: {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
-      },
-      password_hash: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      provider: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -38,6 +29,6 @@ module.exports = {
   },
   // utilizado para quando for dar rollback
   down: queryInterface => {
-    return queryInterface.dropTable('Users');
+    return queryInterface.dropTable('Files');
   },
 };

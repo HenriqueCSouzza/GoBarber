@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import routes from './routes';
 import './database';
 
@@ -13,6 +14,11 @@ class App {
 
   middlewares() {
     this.server.use(express.json());
+    // criando rota para acessar os arquivos salvos
+    this.server.use(
+      '/files',
+      express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
+    );
   }
 
   routes() {

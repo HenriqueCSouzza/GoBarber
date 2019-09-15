@@ -4,6 +4,9 @@ import multerConfig from './config/multer';
 
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
+import FileController from './app/controllers/FIleController';
+import ProviderController from './app/controllers/ProviderController';
+// Middleware de autenticação do token
 import authMiddleware from './app/middlewares/auth';
 
 const routes = new Router();
@@ -15,8 +18,7 @@ routes.post('/sessions', SessionController.store);
 routes.use(authMiddleware);
 routes.put('/users', UserController.update);
 
-routes.post('/file', upload.single('file'), (req, res) => {
-  return res.json({ status: true });
-});
+routes.get('/providers', ProviderController.index);
+routes.post('/file', upload.single('file'), FileController.store);
 
 export default routes;
