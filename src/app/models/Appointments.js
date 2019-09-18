@@ -7,7 +7,7 @@ class Appointments extends Model {
       {
         // atribui os campos da tabela,somente os que o usuario irá interagir
         date: Sequelize.DATE,
-        cancelet_at: Sequelize.DATE,
+        canceled_at: Sequelize.DATE,
       },
       {
         sequelize,
