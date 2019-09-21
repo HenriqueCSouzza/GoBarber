@@ -7,6 +7,9 @@ import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FIleController';
 import ProviderController from './app/controllers/ProviderController';
 import AppointmentController from './app/controllers/AppointmentController';
+import ScheduleController from './app/controllers/ScheduleController';
+import NotificationController from './app/controllers/NotificationController';
+
 // Middleware de autenticação do token
 import authMiddleware from './app/middlewares/auth';
 
@@ -18,6 +21,8 @@ routes.post('/sessions', SessionController.store);
 // A middleware só vai funcionar com as routas apartir daqui
 routes.use(authMiddleware);
 
+routes.get('/users', UserController.index);
+
 routes.put('/users', UserController.update);
 
 routes.get('/providers', ProviderController.index);
@@ -25,6 +30,13 @@ routes.get('/providers', ProviderController.index);
 routes.post('/file', upload.single('file'), FileController.store);
 
 routes.get('/appointment', AppointmentController.index);
+
+routes.get('/schedule', ScheduleController.index);
+
 routes.post('/appointment', AppointmentController.store);
+
+routes.get('/notifications', NotificationController.index);
+
+routes.put('/notifications/:id', NotificationController.update);
 
 export default routes;

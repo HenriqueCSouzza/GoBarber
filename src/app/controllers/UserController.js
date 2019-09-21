@@ -3,6 +3,14 @@ import * as Yup from 'yup';
 import Users from '../models/User';
 
 class UserController {
+  async index(req, res) {
+    const users = await Users.findAll({
+      where: { provider: false },
+    });
+
+    res.json(users);
+  }
+
   async store(req, res) {
     // criando Yup.Object -> mostra para o yup oque ele irá receber de REQ
     // shape() irá ver oque tem dentro do objeto
