@@ -1,17 +1,21 @@
 import * as Yup from 'yup';
 /* date-fns
  * startOfHour - pega o inicio da hora como 13:30:00 - ele irá pegar somente o 13 e zerará o resto
- * parseISO
+ * parseISO - transforma a data international 2000-12-30T13:30:00-03:00 string em um objeto
  * isBefore
+ * subHours
  */
-import { startOfHour, parseISO, isBefore, format } from 'date-fns';
+import { startOfHour, parseISO, isBefore, format, subHours } from 'date-fns';
 // tradução de data
 import pt from 'date-fns/locale/pt';
+
 import calReqPage from '../../util/utils';
 import Users from '../models/User';
 import Files from '../models/File';
 import Appointments from '../models/Appointments';
 import Notification from '../../schemas/Notification';
+// envio de email
+import Mail from '../../lib/Mail';
 
 class AppointmentController {
   async index(req, res) {
@@ -128,6 +132,55 @@ class AppointmentController {
     await Notification.create({
       content: `Novo agendamento ${user.name} para ${formattedDate}`,
       user: provider_id,
+    });
+    return res.json(appointment);
+  }
+
+  async delete(req, res) {
+    const appointment = await Appointments.findByPk(req.params.id, {
+      include: [
+        {
+          model: Users,
+          as: 'provider',
+          attributes: ['name', 'email'],
+        },
+        {
+          model: Users,
+          as: 'user',
+          attributes: ['name'],
+        },
+      ],
+    });
+
+    if (appointment.user_id !== req.userId) {
+      return res.status(401).json({
+        error: "You don't have permission to cancel this appointment",
+      });
+    }
+    // remove duas horas do horario de agendamento
+    const dateWithSub = subHours(appointment.date, 2);
+
+    if (isBefore(dateWithSub, new Date())) {
+      return res
+        .status(401)
+        .json({ error: 'You can only cancel appointments 2 hours in advance' });
+    }
+
+    appointment.canceled_at = new Date();
+
+    await appointment.save();
+
+    await Mail.sendMail({
+      to: `${appointment.provider.name} <${appointment.provider.email}>`,
+      subject: 'Agendamento cancelado',
+      template: 'cancellation',
+      context: {
+        provider: appointment.provider.name,
+        user: appointment.user.name,
+        date: format(appointment.date, "'dia' dd 'de' MMMM', às' H:mm'h'", {
+          locale: pt,
+        }),
+      },
     });
     return res.json(appointment);
   }
