@@ -27,7 +27,7 @@ class AppointmentController {
         user_id: req.userId,
         canceled_at: null,
       },
-      attributes: ['id', 'date'],
+      attributes: ['id', 'date', 'past', 'cancelable'],
       limit: 20,
       // pulando 20 registros
       offset: (reqPage - 1) * 20,
